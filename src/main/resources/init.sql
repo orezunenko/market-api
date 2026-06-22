@@ -1,0 +1,65 @@
+INSERT INTO users (email, password) VALUES ('my@email.com', '$2a$10$wK8vNdfB/Gg8nI4i0e/QluxM.fV/e8gV/wQREfSImXJscTjlyeI2G');
+INSERT INTO users (email, password) VALUES ('test@email.com', '$2a$10$wK8vNdfB/Gg8nI4i0e/QluxM.fV/e8gV/wQREfSImXJscTjlyeI2G');
+INSERT INTO users (email, password) VALUES ('alex.smith@email.com', '$2a$10$wK8vNdfB/Gg8nI4i0e/QluxM.fV/e8gV/wQREfSImXJscTjlyeI2G');
+INSERT INTO users (email, password) VALUES ('olena.p@email.com', '$2a$10$wK8vNdfB/Gg8nI4i0e/QluxM.fV/e8gV/wQREfSImXJscTjlyeI2G');
+INSERT INTO users (email, password) VALUES ('ivan.g@email.com', '$2a$10$wK8vNdfB/Gg8nI4i0e/QluxM.fV/e8gV/wQREfSImXJscTjlyeI2G');
+INSERT INTO users (email, password) VALUES ('manager@email.com', '$2a$10$wK8vNdfB/Gg8nI4i0e/QluxM.fV/e8gV/wQREfSImXJscTjlyeI2G');
+INSERT INTO users (email, password) VALUES ('developer@email.com', '$2a$10$wK8vNdfB/Gg8nI4i0e/QluxM.fV/e8gV/wQREfSImXJscTjlyeI2G');
+INSERT INTO users (email, password) VALUES ('guest_user@email.com', '$2a$10$wK8vNdfB/Gg8nI4i0e/QluxM.fV/e8gV/wQREfSImXJscTjlyeI2G');
+INSERT INTO users (email, password) VALUES ('customer100@email.com', '$2a$10$wK8vNdfB/Gg8nI4i0e/QluxM.fV/e8gV/wQREfSImXJscTjlyeI2G');
+INSERT INTO users (email, password) VALUES ('admin.shop@email.com', '$2a$10$wK8vNdfB/Gg8nI4i0e/QluxM.fV/e8gV/wQREfSImXJscTjlyeI2G');
+
+INSERT INTO products (title, price, available) VALUES ('Цвяхозбірник магнітний', 23.95, 8);
+INSERT INTO products (title, price, available) VALUES ('Молоток супер-ергономічний 500г', 45.50, 15);
+INSERT INTO products (title, price, available) VALUES ('Викрутка хрестова PH2', 8.20, 40);
+INSERT INTO products (title, price, available) VALUES ('Набір викруток (6 шт)', 32.00, 20);
+INSERT INTO products (title, price, available) VALUES ('Плоскогубці діелектричні 180мм', 18.50, 25);
+INSERT INTO products (title, price, available) VALUES ('Рулетка вимірювальна 5м', 7.40, 60);
+INSERT INTO products (title, price, available) VALUES ('Рівень будівельний 60см', 22.10, 12);
+INSERT INTO products (title, price, available) VALUES ('Ножівка по дереву 450мм', 19.80, 18);
+INSERT INTO products (title, price, available) VALUES ('Ключ розвідний 250мм', 26.50, 14);
+INSERT INTO products (title, price, available) VALUES ('Набір ключів комбінованих (12 шт)', 55.00, 10);
+
+INSERT INTO products (title, price, available) VALUES ('Електродриль ударний 750Вт', 120.00, 3);
+INSERT INTO products (title, price, available) VALUES ('Шуруповерт акумуляторний 12В', 89.99, 7);
+INSERT INTO products (title, price, available) VALUES ('Болгарка (КШМ) 125мм', 65.30, 5);
+INSERT INTO products (title, price, available) VALUES ('Перфоратор SDS-Plus 900Вт', 145.00, 4);
+INSERT INTO products (title, price, available) VALUES ('Лобзик електричний 650Вт', 48.00, 9);
+INSERT INTO products (title, price, available) VALUES ('Будівельний фен 2000Вт', 35.50, 11);
+INSERT INTO products (title, price, available) VALUES ('Шліфмашина ексцентрикова', 58.20, 6);
+INSERT INTO products (title, price, available) VALUES ('Міксер будівельний 1200Вт', 95.00, 2);
+INSERT INTO products (title, price, available) VALUES ('Акумулятор до шуруповерта 2Аг', 29.99, 15);
+INSERT INTO products (title, price, available) VALUES ('Зарядний пристрій універсальний', 21.50, 8);
+
+INSERT INTO products (title, price, available) VALUES ('Шурупи по дереву (набір 100 шт)', 12.00, 50);
+INSERT INTO products (title, price, available) VALUES ('Дюбель розпірний 6х40 (100 шт)', 4.50, 100);
+INSERT INTO products (title, price, available) VALUES ('Цвяхи будівельні 100мм (1кг)', 6.20, 35);
+INSERT INTO products (title, price, available) VALUES ('Анкерний болт 10х80 (10 шт)', 8.00, 45);
+INSERT INTO products (title, price, available) VALUES ('Свердла по металу HSS (набір 5 шт)', 14.30, 30);
+INSERT INTO products (title, price, available) VALUES ('Диск відрізний по металу 125мм', 1.50, 200);
+INSERT INTO products (title, price, available) VALUES ('Диск алмазний по бетону 125мм', 13.40, 25);
+INSERT INTO products (title, price, available) VALUES ('Стрічка малярна 48мм х 50м', 3.80, 80);
+INSERT INTO products (title, price, available) VALUES ('Ізоляційна стрічка чорна (3 шт)', 2.90, 120);
+INSERT INTO products (title, price, available) VALUES ('Герметик силіконовий прозорий', 5.50, 40);
+
+INSERT INTO products (title, price, available) VALUES ('Клей монтажний "Рідкі цвяхи"', 6.80, 35);
+INSERT INTO products (title, price, available) VALUES ('Піна монтажна всесезонна 750мл', 9.20, 50);
+INSERT INTO products (title, price, available) VALUES ('Ґрунтовка глибокого проникнення 5л', 11.50, 20);
+INSERT INTO products (title, price, available) VALUES ('Фарба інтер''єрна біла мат 3л', 24.00, 15);
+INSERT INTO products (title, price, available) VALUES ('Валик малярний з ручкою 25см', 5.10, 30);
+INSERT INTO products (title, price, available) VALUES ('Пензель плаский універсальний', 2.20, 60);
+INSERT INTO products (title, price, available) VALUES ('Шпаклівка фінішна акрилова 1.5кг', 7.50, 18);
+INSERT INTO products (title, price, available) VALUES ('Суміш самовирівнювальна для підлоги 25кг', 14.90, 22);
+INSERT INTO products (title, price, available) VALUES ('Стилі затирочні для швів (сірий, 2кг)', 6.10, 16);
+INSERT INTO products (title, price, available) VALUES ('Розчинник Уайт-спірит 0.5л', 3.20, 40);
+
+INSERT INTO products (title, price, available) VALUES ('Рукавиці робочі з нітриловим покриттям', 1.80, 150);
+INSERT INTO products (title, price, available) VALUES ('Окуляри захисні прозорі', 4.20, 45);
+INSERT INTO products (title, price, available) VALUES ('Респіратор захисний (набір 3 шт)', 6.50, 35);
+INSERT INTO products (title, price, available) VALUES ('Лопата совкова з держаком', 16.00, 12);
+INSERT INTO products (title, price, available) VALUES ('Граблі садові 12-зубі', 13.50, 10);
+INSERT INTO products (title, price, available) VALUES ('Секатор для саду професійний', 19.90, 14);
+INSERT INTO products (title, price, available) VALUES ('Шланг для поливу 20м', 28.00, 15);
+INSERT INTO products (title, price, available) VALUES ('Обприскувач садовий помповий 5л', 25.40, 8);
+INSERT INTO products (title, price, available) VALUES ('Драбина алюмінієва 3 ступені', 42.00, 6);
+INSERT INTO products (title, price, available) VALUES ('Ящик для інструментів 16" пластик', 17.50, 20);
