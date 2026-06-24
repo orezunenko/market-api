@@ -8,40 +8,47 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class UserRepositoryTest {
+
+    private static final Long USER_ID = 101L;
+    private static final String EXISTING_EMAIL = "alex.jones@gmail.com";
+    private static final String UNKNOWN_EMAIL = "unknown@gmail.com";
+    private static final int EXPECTED_INVOCATIONS = 1;
 
     @Mock
     private UserRepository userRepository;
 
     @Test
     void findByEmail_ShouldReturnUser_WhenUserExists() {
-        String email = "alex.jones@gmail.com";
         User mockUser = new User();
-        mockUser.setId(101L);
-        mockUser.setEmail(email);
+        mockUser.setId(USER_ID);
+        mockUser.setEmail(EXISTING_EMAIL);
 
-        when(userRepository.findByEmail(email)).thenReturn(Optional.of(mockUser));
+        when(userRepository.findByEmail(EXISTING_EMAIL)).thenReturn(Optional.of(mockUser));
 
-        Optional<User> result = userRepository.findByEmail(email);
+        Optional<User> result = userRepository.findByEmail(EXISTING_EMAIL);
 
         assertTrue(result.isPresent());
-        assertEquals(email, result.get().getEmail());
-        assertEquals(101L, result.get().getId());
-        verify(userRepository, times(1)).findByEmail(email);
+        assertEquals(EXISTING_EMAIL, result.get().getEmail());
+        assertEquals(USER_ID, result.get().getId());
+        verify(userRepository, times(EXPECTED_INVOCATIONS)).findByEmail(EXISTING_EMAIL);
     }
 
     @Test
     void findByEmail_ShouldReturnEmptyOptional_WhenUserDoesNotExist() {
-        String email = "unknown@gmail.com";
-        when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
+        when(userRepository.findByEmail(UNKNOWN_EMAIL)).thenReturn(Optional.empty());
 
-        Optional<User> result = userRepository.findByEmail(email);
+        Optional<User> result = userRepository.findByEmail(UNKNOWN_EMAIL);
 
         assertFalse(result.isPresent());
-        verify(userRepository, times(1)).findByEmail(email);
+        verify(userRepository, times(EXPECTED_INVOCATIONS)).findByEmail(UNKNOWN_EMAIL);
     }
 }

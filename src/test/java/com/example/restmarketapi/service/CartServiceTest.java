@@ -13,13 +13,34 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class CartServiceTest {
+
+    private static final Long PRODUCT_ID = 1L;
+    private static final String PRODUCT_TITLE = "Test Product";
+    private static final int INITIAL_STOCK = 10;
+    private static final int QUANTITY_TWO = 2;
+    private static final int QUANTITY_THREE = 3;
+    private static final int QUANTITY_FIVE = 5;
+    private static final int INSUFFICIENT_STOCK_ADD = 11;
+    private static final int INSUFFICIENT_STOCK_CHANGE = 15;
+    private static final int EXPECTED_ITEMS_SIZE = 1;
 
     @Mock
     private ProductRepository productRepository;
@@ -36,34 +57,34 @@ class CartServiceTest {
     @BeforeEach
     void setUp() {
         cartItems = new LinkedHashMap<>();
-        sampleProduct = new Product(1L, "Test Product", BigDecimal.TEN, 10);
+        sampleProduct = new Product(PRODUCT_ID, PRODUCT_TITLE, BigDecimal.TEN, INITIAL_STOCK);
     }
 
     @Test
     void addProductToCart_ShouldAddProduct_WhenStockIsSufficient() {
-        when(productRepository.findById(1L)).thenReturn(Optional.of(sampleProduct));
+        when(productRepository.findById(PRODUCT_ID)).thenReturn(Optional.of(sampleProduct));
         when(cart.getItems()).thenReturn(cartItems);
 
-        cartService.addProductToCart(1L, 2);
+        cartService.addProductToCart(PRODUCT_ID, QUANTITY_TWO);
 
-        assertEquals(2, cartItems.get(1L));
-        verify(productRepository, times(1)).findById(1L);
+        assertEquals(QUANTITY_TWO, cartItems.get(PRODUCT_ID));
+        verify(productRepository, times(1)).findById(PRODUCT_ID);
     }
 
     @Test
     void addProductToCart_ShouldThrowException_WhenProductNotFound() {
-        when(productRepository.findById(1L)).thenReturn(Optional.empty());
+        when(productRepository.findById(PRODUCT_ID)).thenReturn(Optional.empty());
 
-        assertThrows(IllegalArgumentException.class, () -> cartService.addProductToCart(1L, 2));
-        verify(productRepository, times(1)).findById(1L);
+        assertThrows(IllegalArgumentException.class, () -> cartService.addProductToCart(PRODUCT_ID, QUANTITY_TWO));
+        verify(productRepository, times(1)).findById(PRODUCT_ID);
     }
 
     @Test
     void addProductToCart_ShouldThrowException_WhenStockIsInsufficient() {
-        when(productRepository.findById(1L)).thenReturn(Optional.of(sampleProduct));
+        when(productRepository.findById(PRODUCT_ID)).thenReturn(Optional.of(sampleProduct));
         when(cart.getItems()).thenReturn(cartItems);
 
-        assertThrows(IllegalArgumentException.class, () -> cartService.addProductToCart(1L, 11));
+        assertThrows(IllegalArgumentException.class, () -> cartService.addProductToCart(PRODUCT_ID, INSUFFICIENT_STOCK_ADD));
     }
 
     @Test
@@ -79,18 +100,18 @@ class CartServiceTest {
 
     @Test
     void getAll_ShouldReturnPopulatedCart_WhenCartHasItems() {
-        cartItems.put(1L, 3);
+        cartItems.put(PRODUCT_ID, QUANTITY_THREE);
         when(cart.getItems()).thenReturn(cartItems);
-        when(productRepository.findAllById(Set.of(1L))).thenReturn(List.of(sampleProduct));
+        when(productRepository.findAllById(Set.of(PRODUCT_ID))).thenReturn(List.of(sampleProduct));
 
         CartResponseDto result = cartService.getAll();
 
-        assertEquals(1, result.getItems().size());
+        assertEquals(EXPECTED_ITEMS_SIZE, result.getItems().size());
         assertEquals(new BigDecimal("30"), result.getTotalSum());
 
         CartItemResponseDto itemDto = result.getItems().get(0);
-        assertEquals("Test Product", itemDto.getTitle());
-        assertEquals(3, itemDto.getQuantity());
+        assertEquals(PRODUCT_TITLE, itemDto.getTitle());
+        assertEquals(QUANTITY_THREE, itemDto.getQuantity());
         assertEquals(BigDecimal.TEN, itemDto.getPrice());
         assertEquals(new BigDecimal("30"), itemDto.getSubTotal());
     }
@@ -98,27 +119,27 @@ class CartServiceTest {
     @Test
     void removeProduct_ShouldRemoveItemFromCart() {
         when(cart.getItems()).thenReturn(cartItems);
-        cartItems.put(1L, 2);
+        cartItems.put(PRODUCT_ID, QUANTITY_TWO);
 
-        cartService.removeProduct(1L);
+        cartService.removeProduct(PRODUCT_ID);
 
-        assertFalse(cartItems.containsKey(1L));
+        assertFalse(cartItems.containsKey(PRODUCT_ID));
     }
 
     @Test
     void changeNumberOfProduct_ShouldUpdateQuantity_WhenStockIsSufficient() {
-        when(productRepository.findById(1L)).thenReturn(Optional.of(sampleProduct));
+        when(productRepository.findById(PRODUCT_ID)).thenReturn(Optional.of(sampleProduct));
         when(cart.getItems()).thenReturn(cartItems);
 
-        cartService.changeNumberOfProduct(1L, 5);
+        cartService.changeNumberOfProduct(PRODUCT_ID, QUANTITY_FIVE);
 
-        assertEquals(5, cartItems.get(1L));
+        assertEquals(QUANTITY_FIVE, cartItems.get(PRODUCT_ID));
     }
 
     @Test
     void changeNumberOfProduct_ShouldThrowException_WhenStockIsInsufficient() {
-        when(productRepository.findById(1L)).thenReturn(Optional.of(sampleProduct));
+        when(productRepository.findById(PRODUCT_ID)).thenReturn(Optional.of(sampleProduct));
 
-        assertThrows(IllegalArgumentException.class, () -> cartService.changeNumberOfProduct(1L, 15));
+        assertThrows(IllegalArgumentException.class, () -> cartService.changeNumberOfProduct(PRODUCT_ID, INSUFFICIENT_STOCK_CHANGE));
     }
 }

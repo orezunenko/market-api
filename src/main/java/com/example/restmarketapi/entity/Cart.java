@@ -1,6 +1,5 @@
 package com.example.restmarketapi.entity;
 
-
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.SessionScope;
 

@@ -6,30 +6,36 @@ import com.example.restmarketapi.entity.Cart;
 import com.example.restmarketapi.entity.Product;
 import com.example.restmarketapi.repository.ProductRepository;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Service
+@RequiredArgsConstructor
 public class CartService {
+
+    private static final String PRODUCT_NOT_FOUND_MSG = "Product not found";
+    private static final String PRODUCT_NOT_AVAILABLE_MSG = "The requested quantity of the product is not available";
+    private static final String PRODUCT_UNAVAILABLE_IN_CART_MSG = "Product in cart is not found or unavailable";
+
     private final ProductRepository productRepository;
     private final Cart cart;
 
-    public CartService(ProductRepository productRepository, Cart cart) {
-        this.productRepository = productRepository;
-        this.cart = cart;
-    }
-
     public void addProductToCart(Long id, Integer quantity) {
-        Product product = productRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Product not found"));
+        Product product = productRepository.findById(id).orElseThrow(() -> new IllegalArgumentException(PRODUCT_NOT_FOUND_MSG));
 
         Map<Long, Integer> items = cart.getItems();
 
         int newQuantity = items.getOrDefault(id, 0) + quantity;
 
         if (product.getAvailable() < newQuantity) {
-            throw new IllegalArgumentException("Only " + product.getAvailable() + " units of the product are available");
+            throw new IllegalArgumentException(PRODUCT_NOT_AVAILABLE_MSG);
         }
 
         items.put(id, newQuantity);
@@ -62,7 +68,7 @@ public class CartService {
 
             Product product = productMap.get(productId);
             if (product == null) {
-                throw new IllegalArgumentException("Product with ID " + productId + " not found or unavailable");
+                throw new IllegalArgumentException(PRODUCT_UNAVAILABLE_IN_CART_MSG);
             }
 
             BigDecimal subtotal = product.getPrice().multiply(BigDecimal.valueOf(quantity));
@@ -87,9 +93,9 @@ public class CartService {
     }
 
     public void changeNumberOfProduct(Long id, Integer newQuantity) {
-        Product product = productRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Product not found"));
+        Product product = productRepository.findById(id).orElseThrow(() -> new IllegalArgumentException(PRODUCT_NOT_FOUND_MSG));
         if (product.getAvailable() < newQuantity) {
-            throw new IllegalArgumentException("Only " + product.getAvailable() + " units of the product are available");
+            throw new IllegalArgumentException(PRODUCT_NOT_AVAILABLE_MSG);
         }
 
         cart.getItems().put(id, newQuantity);

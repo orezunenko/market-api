@@ -15,10 +15,20 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
+
+    private static final Long PRODUCT_ONE_ID = 1L;
+    private static final Long PRODUCT_TWO_ID = 2L;
+    private static final String PRODUCT_ONE_TITLE = "Product 1";
+    private static final String PRODUCT_TWO_TITLE = "Product 2";
+    private static final int PRODUCT_ONE_AVAILABLE = 10;
+    private static final int PRODUCT_TWO_AVAILABLE = 5;
+    private static final int EXPECTED_SIZE = 2;
 
     @Mock
     private ProductRepository productRepository;
@@ -31,12 +41,12 @@ class ProductServiceTest {
 
     @Test
     void getAll_ShouldReturnListOfProductResponseDtos() {
-        Product product1 = new Product(1L, "Product 1", BigDecimal.TEN, 10);
-        Product product2 = new Product(2L, "Product 2", BigDecimal.ONE, 5);
+        Product product1 = new Product(PRODUCT_ONE_ID, PRODUCT_ONE_TITLE, BigDecimal.TEN, PRODUCT_ONE_AVAILABLE);
+        Product product2 = new Product(PRODUCT_TWO_ID, PRODUCT_TWO_TITLE, BigDecimal.ONE, PRODUCT_TWO_AVAILABLE);
         List<Product> products = List.of(product1, product2);
 
-        ProductResponseDto dto1 = new ProductResponseDto(1L, "Product 1", BigDecimal.TEN, 10);
-        ProductResponseDto dto2 = new ProductResponseDto(2L, "Product 2", BigDecimal.ONE, 5);
+        ProductResponseDto dto1 = new ProductResponseDto(PRODUCT_ONE_ID, PRODUCT_ONE_TITLE, BigDecimal.TEN, PRODUCT_ONE_AVAILABLE);
+        ProductResponseDto dto2 = new ProductResponseDto(PRODUCT_TWO_ID, PRODUCT_TWO_TITLE, BigDecimal.ONE, PRODUCT_TWO_AVAILABLE);
 
         when(productRepository.findAll()).thenReturn(products);
         when(modelMapper.map(product1, ProductResponseDto.class)).thenReturn(dto1);
@@ -45,9 +55,9 @@ class ProductServiceTest {
         List<ProductResponseDto> result = productService.getAll();
 
         assertNotNull(result);
-        assertEquals(2, result.size());
-        assertEquals("Product 1", result.get(0).getTitle());
-        assertEquals("Product 2", result.get(1).getTitle());
+        assertEquals(EXPECTED_SIZE, result.size());
+        assertEquals(PRODUCT_ONE_TITLE, result.get(0).getTitle());
+        assertEquals(PRODUCT_TWO_TITLE, result.get(1).getTitle());
 
         verify(productRepository, times(1)).findAll();
         verify(modelMapper, times(1)).map(product1, ProductResponseDto.class);

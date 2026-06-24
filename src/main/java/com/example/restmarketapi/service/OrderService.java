@@ -1,45 +1,57 @@
 package com.example.restmarketapi.service;
 
 import com.example.restmarketapi.dto.OrderResponseDto;
-import com.example.restmarketapi.entity.*;
+import com.example.restmarketapi.entity.Cart;
+import com.example.restmarketapi.entity.Order;
+import com.example.restmarketapi.entity.OrderItem;
+import com.example.restmarketapi.entity.OrderStatus;
+import com.example.restmarketapi.entity.Product;
+import com.example.restmarketapi.entity.User;
 import com.example.restmarketapi.repository.OrderRepository;
 import com.example.restmarketapi.repository.ProductRepository;
 import com.example.restmarketapi.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class OrderService {
+
+    private static final String EMPTY_CART_MSG = "You have empty cart";
+    private static final String USER_NOT_FOUND_MSG = "User not found";
+    private static final String PRODUCT_NOT_AVAILABLE_MSG = "One of your products is not available or doesn't exist";
+    private static final String UNAUTHORIZED_MSG = "User is not authenticated. Please log in first.";
+
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
     private final Cart cart;
 
-
-    public OrderService(OrderRepository orderRepository, ProductRepository productRepository, UserRepository userRepository, ModelMapper modelMapper, Cart cart) {
-        this.orderRepository = orderRepository;
-        this.productRepository = productRepository;
-        this.userRepository = userRepository;
-        this.modelMapper = modelMapper;
-        this.cart = cart;
-    }
-
     @Transactional
     public OrderResponseDto createOrder(Long userId) {
+        if (userId == null) {
+            throw new IllegalArgumentException(UNAUTHORIZED_MSG);
+
+        }
         if (cart.getItems().isEmpty()) {
-            throw new IllegalArgumentException("You have empty cart");
+            throw new IllegalArgumentException(EMPTY_CART_MSG);
         }
 
         Map<Long, Integer> mapOfItems = new LinkedHashMap<>(cart.getItems());
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+                .orElseThrow(() -> new IllegalArgumentException(USER_NOT_FOUND_MSG));
 
         List<Long> productIds = new ArrayList<>(mapOfItems.keySet());
         List<Product> productsFromDb = productRepository.findAllById(productIds);
@@ -64,7 +76,7 @@ public class OrderService {
             Product product = productMap.get(productId);
 
             if (product == null || product.getAvailable() < quantity) {
-                throw new IllegalArgumentException("One of your products is not available or doesn't exist");
+                throw new IllegalArgumentException(PRODUCT_NOT_AVAILABLE_MSG);
             }
 
             product.setAvailable(product.getAvailable() - quantity);

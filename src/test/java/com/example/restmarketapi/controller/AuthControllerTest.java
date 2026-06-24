@@ -10,16 +10,23 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpSession;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class AuthControllerTest {
+
+    private static final Long USER_ID = 1L;
+    private static final String TEST_EMAIL = "test@example.com";
+    private static final String TEST_PASSWORD = "password123";
+    private static final String ENCODED_PASSWORD = "encodedPassword";
+    private static final String SESSION_USER_ID_KEY = "userId";
+    private static final int EXPECTED_INVOCATIONS = 1;
 
     @Mock
     private UserService userService;
@@ -29,29 +36,25 @@ class AuthControllerTest {
 
     @Test
     void register_ShouldReturnOk_WhenDtoIsValid() {
-        UserRegisterDto dto = new UserRegisterDto("test@example.com", "password123");
+        UserRegisterDto dto = new UserRegisterDto(TEST_EMAIL, TEST_PASSWORD);
 
-        ResponseEntity<String> response = authController.register(dto);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Success", response.getBody());
-        verify(userService, times(1)).register(dto);
+        authController.register(dto);
+        verify(userService, times(EXPECTED_INVOCATIONS)).register(dto);
     }
 
     @Test
     void login_ShouldReturnOkAndSetSession_WhenCredentialsAreValid() {
-        UserLoginDto dto = new UserLoginDto("test@example.com", "password123");
-        User user = new User(1L, "test@example.com", "encodedPassword");
+        UserLoginDto dto = new UserLoginDto(TEST_EMAIL, TEST_PASSWORD);
+        User user = new User(USER_ID, TEST_EMAIL, ENCODED_PASSWORD);
         MockHttpSession session = new MockHttpSession();
 
         when(userService.login(dto)).thenReturn(user);
 
-        ResponseEntity<LoginResponseDto> response = authController.login(dto, session);
+        LoginResponseDto responseDto = authController.login(dto, session);
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals(session.getId(), response.getBody().getSessionId());
-        assertEquals(1L, session.getAttribute("userId"));
-        verify(userService, times(1)).login(dto);
+        assertNotNull(responseDto);
+        assertEquals(session.getId(), responseDto.getSessionId());
+        assertEquals(USER_ID, session.getAttribute(SESSION_USER_ID_KEY));
+        verify(userService, times(EXPECTED_INVOCATIONS)).login(dto);
     }
 }

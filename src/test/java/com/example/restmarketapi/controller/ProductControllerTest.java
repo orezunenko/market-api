@@ -7,17 +7,26 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ProductControllerTest {
+
+    private static final Long PRODUCT_ONE_ID = 1L;
+    private static final Long PRODUCT_TWO_ID = 2L;
+    private static final String PRODUCT_ONE_TITLE = "Product 1";
+    private static final String PRODUCT_TWO_TITLE = "Product 2";
+    private static final int PRODUCT_ONE_AVAILABLE = 10;
+    private static final int PRODUCT_TWO_AVAILABLE = 5;
+    private static final int EXPECTED_SIZE = 2;
+    private static final int EXPECTED_INVOCATIONS = 1;
 
     @Mock
     private ProductService productService;
@@ -28,16 +37,15 @@ class ProductControllerTest {
     @Test
     void getAll_ShouldReturnListOfProducts() {
         List<ProductResponseDto> expectedProducts = List.of(
-                new ProductResponseDto(1L, "Product 1", BigDecimal.TEN, 10),
-                new ProductResponseDto(2L, "Product 2", BigDecimal.ONE, 5)
+                new ProductResponseDto(PRODUCT_ONE_ID, PRODUCT_ONE_TITLE, BigDecimal.TEN, PRODUCT_ONE_AVAILABLE),
+                new ProductResponseDto(PRODUCT_TWO_ID, PRODUCT_TWO_TITLE, BigDecimal.ONE, PRODUCT_TWO_AVAILABLE)
         );
         when(productService.getAll()).thenReturn(expectedProducts);
 
-        ResponseEntity<List<ProductResponseDto>> response = productController.getAll();
+        List<ProductResponseDto> actualProducts = productController.getAll();
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(expectedProducts, response.getBody());
-        assertEquals(2, response.getBody().size());
-        verify(productService, times(1)).getAll();
+        assertEquals(expectedProducts, actualProducts);
+        assertEquals(EXPECTED_SIZE, actualProducts.size());
+        verify(productService, times(EXPECTED_INVOCATIONS)).getAll();
     }
 }
